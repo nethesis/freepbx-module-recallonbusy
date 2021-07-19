@@ -35,7 +35,6 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 	public function showPage()
 	{
 		$subhead = _('Recall On Busy options');
-		$settings = array('token' => $this->getConfig('token'));
 		$content = load_view(__DIR__.'/views/form.php', array('settings' => $settings));
 		show_view(__DIR__.'/views/default.php', array('subhead' => $subhead, 'content' => $content));
 	}
@@ -57,9 +56,10 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 	}
 
 	public function doGuiHook(&$currentcomponent) {
+		global $astman;
 		if ($_REQUEST['display'] == "extensions" && !empty($_REQUEST['extdisplay'])) {
-			$enabled = $this->getConfig('enabled',$_REQUEST['extdisplay']);
-			$enabled = !empty($enabled) ? $enabled : 'enabled';
+			$enabled = $astman->database_get("ROBconfig",$_REQUEST['extdisplay']);
+			$enabled = !empty($enabled) ? $enabled : $this->getConfig('default');
 			$section = _("Extension Options");
 			$category = "advanced";
 			$currentcomponent->addoptlistitem('recallonbusy', 'enabled', _("Enable"));
@@ -70,9 +70,10 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 	}
 
 	public function doConfigPageInit($display) {
+		global $astman;
 		if ($display == "extensions" && !empty($_REQUEST['recallonbusy'])) {
 			// Save Recall On Busy option for the extension
-			$this->setConfig('enabled',$_REQUEST['recallonbusy'],$_REQUEST['extdisplay']);
+			$astman->database_put("ROBconfig",$_REQUEST['extdisplay'],$_REQUEST['recallonbusy']);
     		}
 	}
 
@@ -86,12 +87,18 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 	{
 		include_once '/var/www/html/freepbx/rest/lib/libExtensions.php';
 		foreach (\FreePBX::Core()->getAllUsers() as $extension => $data) {
-			if (!isMainExtension($extension)) {
-				continue;
-			}
-			#$ext->splice('ext-local', $extension, '1', new \ext_gosubif('$["${DIALSTATUS}"="BUSY"]','recall-on-busy,s,1'));
-			$ext->splice('ext-local', $extension, '1', new \ext_gosub('recall-on-busy,s,1'));
+			#if (!isMainExtension($extension)) {
+		#		continue;
+		#	}
+			$ext->splice('ext-local', $extension, '1', new \ext_gosubif('$["${DIALSTATUS}"="BUSY"]','recall-on-busy,s,1'));
+			#$ext->splice('ext-local', $extension, '1', new \ext_gosub('recall-on-busy,s,1'));
 		}
+		if ($this->getConfig('default') == 'enabled') {
+			$ifstring = '$[("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & ("${DB(ROBconfig/${AMPUSER})}"="enabled" | ${DB(ROBconfig/${AMPUSER})}"="" )]';
+		} else {
+			$ifstring = '$[("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & "${DB(ROBconfig/${AMPUSER})}"="enabled"]';
+		}
+		$ext->splice('macro-exten-vm', 's', 20, new \ext_execif($ifstring,'MacroExit'));
 		$context = 'recall-on-busy';
 		//$ext->add($context, 's', '', new \ext_gotoif('$["foo${EXTTOCALL}" = "foo"]','skiprob'));
 		$ext->add($context, 's', '', new \ext_Noop('${EXTTOCALL}'));

@@ -23,8 +23,9 @@ $callerid = $agi->request['agi_callerid'];
 //TODO get mainextension for callerid
 $agi->verbose("Caller ID = $callerid");
 
+global $astman;
 // Check if extension has recall on busy enabled
-$status = \FreePBX::Recallonbusy()->getConfig("enabled",$callerid);
+$status = $astman->database_get("ROBconfig",$callerid);
 $default_status = \FreePBX::Recallonbusy()->getConfig("default");
 $agi->verbose("status: ". $status);
 $agi->verbose("default status: ". $default_status);
