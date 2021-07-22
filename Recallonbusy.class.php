@@ -87,24 +87,20 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 	{
 		include_once '/var/www/html/freepbx/rest/lib/libExtensions.php';
 		foreach (\FreePBX::Core()->getAllUsers() as $extension => $data) {
-			#if (!isMainExtension($extension)) {
+		#	if (!isMainExtension($extension)) {
 		#		continue;
 		#	}
-			$ext->splice('ext-local', $extension, '1', new \ext_gosubif('$["${DIALSTATUS}"="BUSY"]','recall-on-busy,s,1'));
-			#$ext->splice('ext-local', $extension, '1', new \ext_gosub('recall-on-busy,s,1'));
+			$ext->splice('ext-local', $extension, '4', new \ext_gosubif('$["${DIALSTATUS}"="BUSY" && "${DB(AMPUSER/${AMPUSER}/cidnum)}" != ""]','recall-on-busy,s,1'));
 		}
 		if ($this->getConfig('default') == 'enabled') {
-			$ifstring = '$[("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & ("${DB(ROBconfig/${AMPUSER})}"="enabled" | ${DB(ROBconfig/${AMPUSER})}"="" )]';
+			$ifstring = '$["${DB(AMPUSER/${AMPUSER}/cidnum)}" != "" & ("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & ("${DB(ROBconfig/${AMPUSER})}"="enabled" | "${DB(ROBconfig/${AMPUSER})}"="" )]';
 		} else {
-			$ifstring = '$[("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & "${DB(ROBconfig/${AMPUSER})}"="enabled"]';
+			$ifstring = '$["${DB(AMPUSER/${AMPUSER}/cidnum)}" != "" & ("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & "${DB(ROBconfig/${AMPUSER})}"="enabled"]';
 		}
 		$ext->splice('macro-exten-vm', 's', 20, new \ext_execif($ifstring,'MacroExit'));
 		$context = 'recall-on-busy';
-		//$ext->add($context, 's', '', new \ext_gotoif('$["foo${EXTTOCALL}" = "foo"]','skiprob'));
-		$ext->add($context, 's', '', new \ext_Noop('${EXTTOCALL}'));
-		$ext->add($context, 's', '', new \ext_Noop('${DIALSTATUS}'));
-		$ext->add($context, 's', '', new \ext_agi('recallonbusy_set.php'));
-		$ext->add($context, 's', 'skiprob', new \ext_return());
+		$ext->add($context, 's', '', new \ext_agi('recallonbusy_set.php,${EXTTOCALL}'));
+		$ext->add($context, 's', '', new \ext_return());
 		$ext->addInclude('ext-local',$context);
 		
 		$ext->splice('macro-hangupcall', 's', '7', new \ext_agi('recallonbusy.php'));
