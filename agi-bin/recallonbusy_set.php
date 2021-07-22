@@ -13,14 +13,14 @@
 //GNU General Public License for more details.
 
 include_once '/etc/freepbx.conf';
+include_once '/var/www/html/freepbx/rest/lib/libExtensions.php';
 
 define("AGIBIN_DIR", "/var/lib/asterisk/agi-bin");
 include(AGIBIN_DIR."/phpagi.php");
 $agi = new AGI();
 
 // Get caller
-$callerid = $agi->request['agi_callerid'];
-//TODO get mainextension for callerid
+$callerid = getMainExtension( $agi->request['agi_callerid']);
 $agi->verbose("Caller ID = $callerid");
 
 global $astman;
@@ -36,9 +36,13 @@ if ($status == "disabled" || ( empty($status) && $default_status == 'disabled' )
 $agi->verbose("Recall On Busy ENABLED for extension ".$callerid);
 
 // Get called id
-$calledid = $agi->request['agi_extension'];
+$calledid = getMainExtension($argv[1]);
+$agi->verbose("Called ID = $calledid");
+if (empty($calledid) || empty($callerid) || !isMainExtension($callerid) ) {
+    $agi->verbose("Wrong extension");
+    exit(1);
+}
 
-//TODO get mainextension for called id
 //TODO play press 5 key to recall message
 //TODO check pressed digit
 
@@ -52,4 +56,7 @@ if (in_array($callerid,$extensions_waiting)) {
 }
 $extensions_waiting[] = $callerid;
 $astman->database_put("ROB", $calledid, implode('&',$extensions_waiting));
+
+//Hangup
+$agi->exec("Macro","hangupcall");
 
