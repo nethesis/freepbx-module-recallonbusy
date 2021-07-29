@@ -1,0 +1,12 @@
+[recallonbusy]
+{
+    use NethServer::Password;
+    my $nethcti_pwd = NethServer::Password::store('NethctiManagerPasswd') || die('Could not generate Nethcti manager password!');
+    my $Debug = ${'recallonbusy'}{Debug} || False;
+    my $CheckInterval = ${'recallonbusy'}{CheckInterval} || 20;
+
+    $OUT .= "Username: proxycti\n";
+    $OUT .= "Secret: $nethcti_pwd\n";
+    $OUT .= "Debug : $Debug\n";
+    $OUT .= "CheckInterval: $CheckInterval\n";
+}

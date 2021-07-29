@@ -90,7 +90,7 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 		#	if (!isMainExtension($extension)) {
 		#		continue;
 		#	}
-			$ext->splice('ext-local', $extension, '4', new \ext_gosubif('$["${DIALSTATUS}"="BUSY" && "${DB(AMPUSER/${AMPUSER}/cidnum)}" != ""]','recall-on-busy,s,1'));
+			$ext->splice('ext-local', $extension, 'dest', new \ext_gosubif('$["${DIALSTATUS}"="BUSY" && "${DB(AMPUSER/${AMPUSER}/cidnum)}" != ""]','recall-on-busy,s,1'),'',1);
 		}
 		if ($this->getConfig('default') == 'enabled') {
 			$ifstring = '$["${DB(AMPUSER/${AMPUSER}/cidnum)}" != "" & ("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & ("${DB(ROBconfig/${AMPUSER})}"="enabled" | "${DB(ROBconfig/${AMPUSER})}"="" )]';
@@ -102,8 +102,6 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 		$ext->add($context, 's', '', new \ext_agi('recallonbusy_set.php,${EXTTOCALL}'));
 		$ext->add($context, 's', '', new \ext_return());
 		$ext->addInclude('ext-local',$context);
-		
-		$ext->splice('macro-hangupcall', 's', '7', new \ext_agi('recallonbusy.php'));
 	}
 }
 

@@ -1,0 +1,24 @@
+#!/usr/bin/perl -w
+
+use esmith::Build::CreateLinks qw(:all);
+
+#
+# recallonbusy-update event
+#
+#
+
+my $event = 'recallonbusy-update';
+
+event_actions($event, qw(
+    initialize-default-databases 00
+    recallonbusy-conf 50
+));
+
+event_templates($event, qw(
+    /etc/recallonbusy.cfg
+));
+
+event_services($event ,qw(
+    recallonbusy restart
+));
+

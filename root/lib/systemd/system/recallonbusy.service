@@ -1,0 +1,14 @@
+[Unit]
+Description=NethVoice Recall on Busy daemon
+After=asterisk.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=30
+ExecStart=/var/lib/asterisk/bin/recallonbusy
+User=asterisk
+Group=asterisk
+
+[Install]
+WantedBy=multi-user.target
