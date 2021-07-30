@@ -107,6 +107,9 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 			if (!empty($_REQUEST['default'])) {
 				$this->setConfig('default',$_REQUEST['default']);
 			}
+			if (!empty($_REQUEST['digit'])) {
+				$this->setConfig('digit',$_REQUEST['digit']);
+			}
 		}
 	}
 

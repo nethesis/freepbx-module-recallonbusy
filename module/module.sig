@@ -19,7 +19,10 @@ type=public
 [hashes]
 Recallonbusy.class.php = 9a177ff95822a55be35a62083b945e355a9d42f52205ee89aae5bbe3757918a7
 agi-bin/recallonbusy_set.php = cb05f6d0ec8a50a4cd5f28d5fe99f8580a56d46054eef7ce07fd30affcc8fce6
-module.xml = 816e1dde68bda6158080c8f869c323075e3dd86754f8e29b5b5f819747a9aaff
+i18n/googletts.pot = 355a497a77fdb4d03fdb6422a665c255bc913c180a322d14fa9ea7b4b9555d98
+i18n/it_IT/LC_MESSAGES/recallonbusy.mo = 03efa38645d2dc949fbe46718cc4be55844fa3bb66b237d88f058268213fb29d
+i18n/it_IT/LC_MESSAGES/recallonbusy.po = bf737465f0ca40e2063559ceb6b151b0f9dea7b6dbcbefe2db7e6f4ab780862c
+module.xml = c52f9b4b062495b332173614e8b7bd0cc79c827ca3e6a0ac5d824e50f338075a
 page.recallonbusy.php = dec8ac0e64fcc97f7a20dcf81317f7082dfc1401b353e6fbe7306b162fc1cfbf
 sounds/en/book-callback.wav = a3121422398334ade8f6c58fae49f39b16963f2c997f9fa6a33288a8382755e5
 sounds/en/callback-booked.wav = 8d93c40d164418f4c78786f01d8061879da3115f27dd3534e620cbfef64b95db
@@ -35,12 +38,12 @@ views/form.php = 9ab451f5abfb19fa0a92aa4c0df3bb83555cfb086e78abd8332fdc60cd60ab4
 ;# End
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEE4w17PfCLmp9/BN1lD2OWQFtZdikFAmEEHLkACgkQD2OWQFtZ
-dils+Qf9GutExm8O9FLtIzInYtPkvz2B0k3kkd/nNtyz/vEu40NF5vEtR5MD2XV8
-Agcel+Vw/kAW8s7CxsupkObZATjY0JG1AuSCyEfDAU8zpm5IhBx+6615j84LnzSP
-i9qRRESXqGbWxFd9NhoUxklF1gWQmfdgh6zvJ0JBD5OjyxZkhcGKsoXe28omp0UU
-iQQyk3LA8B3fF+02g2SYL84SvXa1q+7Yb6ywu1Kndezugglzf+Db9ss+3UHYpXV4
-Sun5gUAOLyI/0EAEdrFV54FTFda68UmN2ZHTPMX7XeRL4zigg5k9p/4lJhkNs1U0
-PKxWgUiDqkt5aLlpsfiJw2+xvdtOOA==
-=Z9Lo
+iQEzBAEBCAAdFiEE4w17PfCLmp9/BN1lD2OWQFtZdikFAmEEITQACgkQD2OWQFtZ
+dilW0gf/WOHYjKLESdIyD9iR9HeSC3wQdmabsLf6NJuXnh6i3C5tQpx47QadHw76
+WzA35KsVeVUIFfkd3RfTkbogJVYFBHBOz3TpswM8it5cxUobeArBBsmatQymDT5M
+PCgcBuFuuKhA0NMvhsW3WypPEvfYhxCE0MvWkCwiIJskHUCMpB4CwL0m2TjHWfn8
+19kzz15SV2beqav3yfbxypgdxIxtfR/sNQ7vPidR/mU0Qz9ZdewR9EjZJkxK/NFB
+fcVxC12x1L3Il43Fed67g4CnBHNbPQdm9Cv4TfhfNwiBKzY2CQLcf2ETG3XbvuV8
+Z4k336rFT8VvGX+VNWmE4Lr6+jCZ3Q==
+=5k+v
 -----END PGP SIGNATURE-----
