@@ -26,6 +26,9 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 		if(!$this->getConfig('default')) {
 			$this->setConfig('default','enabled');
 		}
+		if(!$this->getConfig('digit')) {
+			$this->setConfig('digit',5);
+		}
 	}
 	public function uninstall()
 	{
@@ -34,10 +37,36 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 
 	public function showPage()
 	{
-		$subhead = _('Recall On Busy options');
+		$settings = array();
+		$settings['default'] = $this->getConfig('default');
+		$settings['digit'] = !empty($this->getConfig('digit')) ? $this->getConfig('digit') : 5;
+		$head = _('Recall On Busy options');
+		$subhead = _('Configure global options for Recall on Busy');
 		$content = load_view(__DIR__.'/views/form.php', array('settings' => $settings));
-		show_view(__DIR__.'/views/default.php', array('subhead' => $subhead, 'content' => $content));
+		show_view(__DIR__.'/views/default.php', array('subhead' => $subhead, 'head' => $head, 'content' => $content));
 	}
+
+	public function getActionBar($request)
+	{
+		$buttons = array();
+                if ($request['display'] === 'recallonbusy') {
+			$buttons = array(
+				'submit' => array(
+					'name' => 'submit',
+					'id' => 'submit',
+					'value' => _('Submit')
+				),
+				'reset' => array(
+					'name' => 'reset',
+					'id' => 'reset',
+					'value' => _('Reset')
+				)
+			);
+		}
+		return $buttons;
+	}
+
+
 	// The following two stubs are planned for implementation in FreePBX 15.
 	public function backup()
 	{
@@ -74,7 +103,11 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 		if ($display == "extensions" && !empty($_REQUEST['recallonbusy'])) {
 			// Save Recall On Busy option for the extension
 			$astman->database_put("ROBconfig",$_REQUEST['extdisplay'],$_REQUEST['recallonbusy']);
-    		}
+		} elseif ($display == "recallonbusy") {
+			if (!empty($_REQUEST['default'])) {
+				$this->setConfig('default',$_REQUEST['default']);
+			}
+		}
 	}
 
 	// We want to do dialplan stuff.

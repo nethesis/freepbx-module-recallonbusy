@@ -44,7 +44,8 @@ if (empty($calledid) || empty($callerid) || !isMainExtension($callerid) ) {
 }
 
 // Play press 5 key to recall message
-$digit = 5;
+$digit = \FreePBX::Recallonbusy()->getConfig("digit");
+$digit = (!empty($digit)) ? $digit : 5;
 $agi->answer();
 for ($i = 0; $i <2; $i++) {
     $res = $agi->stream_file('recall-on-busy-service-press',$digit);
