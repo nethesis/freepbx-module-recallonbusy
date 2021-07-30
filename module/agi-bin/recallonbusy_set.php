@@ -43,20 +43,41 @@ if (empty($calledid) || empty($callerid) || !isMainExtension($callerid) ) {
     exit(1);
 }
 
-//TODO play press 5 key to recall message
-//TODO check pressed digit
-
-//Create db entry for wating queue
-$recall_string = trim($astman->database_get("ROB",$calledid));
-$extensions_waiting = empty($recall_string) ? array() : explode('&',$recall_string);
-
-if (in_array($callerid,$extensions_waiting)) {
-    $agi->verbose("Extension ".$callerid." already waiting for ".$calledid." to become available");
-    exit(0);
+// Play press 5 key to recall message
+$digit = 5;
+$agi->answer();
+for ($i = 0; $i <2; $i++) {
+    $res = $agi->stream_file('recall-on-busy-service-press',$digit);
+    if($res['code'] == AGIRES_OK && $res['result'] > 0 && chr($res['result']) == $digit) {
+        book_callback($callerid,$calledid);
+    }
+    $res = $agi->say_digits($digit,$digit);
+    if($res['code'] == AGIRES_OK && $res['result'] > 0 && chr($res['result']) == $digit) {
+        book_callback($callerid,$calledid);
+    }
+    $res = $agi->stream_file('book-callback',$digit);
+    if($res['code'] == AGIRES_OK && $res['result'] > 0 && chr($res['result']) == $digit) {
+        book_callback($callerid,$calledid);
+    }
 }
-$extensions_waiting[] = $callerid;
-$astman->database_put("ROB", $calledid, implode('&',$extensions_waiting));
 
-//Hangup
-$agi->exec("Macro","hangupcall");
+function book_callback($callerid,$calledid) {
+    global $agi;
+    global $astman;
+    //Create db entry for wating queue
+    $recall_string = trim($astman->database_get("ROB",$calledid));
+    $extensions_waiting = empty($recall_string) ? array() : explode('&',$recall_string);
 
+    if (in_array($callerid,$extensions_waiting)) {
+        $agi->verbose("Extension ".$callerid." already waiting for ".$calledid." to become available");
+        $agi->stream_file('callback-booked');
+        $agi->exec("Macro","hangupcall");
+    }
+    $extensions_waiting[] = $callerid;
+    $astman->database_put("ROB", $calledid, implode('&',$extensions_waiting));
+    $agi->verbose("Recall on Busy booked for extension ".$calledid);
+    $agi->stream_file('callback-booked');
+    $agi->exec("Macro","hangupcall");
+}
+
+exit(0);
