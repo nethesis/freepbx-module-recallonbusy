@@ -120,7 +120,7 @@ def event_listener(source, event):
                             'Originate',
                             Channel='Local/'+waiting_extension+'@from-internal',
                             Timeout=150000,
-                            CallerID='↶'+ext_to_call,
+                            CallerID=ext_to_call,
                             Context='from-internal',
                             Priority=1,
                             Exten=ext_to_call
