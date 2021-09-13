@@ -24,7 +24,7 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 	public function install()
 	{
 		if(!$this->getConfig('default')) {
-			$this->setConfig('default','enabled');
+			$this->setConfig('default','disabled');
 		}
 		if(!$this->getConfig('digit')) {
 			$this->setConfig('digit',5);
