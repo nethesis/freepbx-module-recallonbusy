@@ -52,7 +52,7 @@ for ($i = 0; $i <2; $i++) {
     if($res['code'] == AGIRES_OK && $res['result'] > 0 && chr($res['result']) == $digit) {
         book_callback($callerid,$calledid);
     }
-    $res = $agi->say_digits($digit,$digit);
+    $res = $agi->stream_file('press-'.$digit,$digit);
     if($res['code'] == AGIRES_OK && $res['result'] > 0 && chr($res['result']) == $digit) {
         book_callback($callerid,$calledid);
     }
