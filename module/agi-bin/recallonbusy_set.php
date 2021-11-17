@@ -75,14 +75,13 @@ function book_callback($callerid,$calledid) {
 
     if (in_array($callerid,$extensions_waiting)) {
         $agi->verbose("Extension ".$callerid." already waiting for ".$calledid." to become available");
-        $agi->stream_file('callback-booked');
-        $agi->exec("Macro","hangupcall");
+    } else {
+        $extensions_waiting[] = $callerid;
+        $astman->database_put("ROB", $calledid, implode('&',$extensions_waiting));
+        $agi->verbose("Recall on Busy booked for extension ".$calledid);
     }
-    $extensions_waiting[] = $callerid;
-    $astman->database_put("ROB", $calledid, implode('&',$extensions_waiting));
-    $agi->verbose("Recall on Busy booked for extension ".$calledid);
     $agi->stream_file('callback-booked');
     $agi->exec("Macro","hangupcall");
+    exit(0);
 }
 
-exit(0);
