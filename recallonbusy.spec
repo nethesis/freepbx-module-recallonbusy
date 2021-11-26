@@ -1,5 +1,5 @@
 Name: recallonbusy
-Version: 1.0.1
+Version: 1.0.2
 Release: 1%{?dist}
 Summary: Recall On Busy for NethVoice14
 Group: Network
@@ -40,6 +40,9 @@ rm -rf %{buildroot}
 %dir %{_nseventsdir}/%{name}-update
 
 %changelog
+* Fri Nov 26 2021 Stefano Fancello <stefano.fancello@nethesis.it> - 1.0.2-1
+- Recall on busy doesn't recognize extensions state - Bug nethesis/dev#6088
+
 * Wed Oct 20 2021 Stefano Fancello <stefano.fancello@nethesis.it> - 1.0.1-1
 - Add silence before repeating message nethesis/dev#6066
 - Add "press" before saying the "five" digit nethesis/dev#6066
