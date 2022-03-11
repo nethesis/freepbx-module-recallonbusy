@@ -153,23 +153,27 @@ def ami_client_connect_and_login(address,port,username,secret):
         client.login(username=CONFIG['Username'],secret=CONFIG['Secret'])
         client.add_event_listener(event_listener, white_list=['DeviceStateChange','DBGetResponse'])
         log_debug('AMI client connected')
+        return True
     except Exception as err:
-        syslog.syslog(syslog.LOG_ERR,'AMI client ERROR: ' % str(err))
-
-# Connect to client
-ami_client_connect_and_login(address=CONFIG['Host'],port=CONFIG['Port'],username=CONFIG['Username'],secret=CONFIG['Secret'])
+        syslog.syslog(syslog.LOG_ERR,'AMI client ERROR: %s' % str(err))
+        return False
 
 device_state_map = {}
+
+connected = False
 
 #MAIN LOOP
 while True:
     try:
-        # Ask for device state map updates
-        client.send_action(SimpleAction('DeviceStateList'))
+        if not connected:
+            ami_client_connect_and_login(address=CONFIG['Host'],port=CONFIG['Port'],username=CONFIG['Username'],secret=CONFIG['Secret'])
+        if connected:
+            # Ask for device state map updates
+            client.send_action(SimpleAction('DeviceStateList'))
 
-        time.sleep(CONFIG['CheckInterval'])
-    except Exception, e:
+    except Exception as e:
         syslog.syslog(syslog.LOG_ERR,"Error: " + str(e))
-        sys.exit(1)
+        connected = False
 
+    time.sleep(CONFIG['CheckInterval'])
 
