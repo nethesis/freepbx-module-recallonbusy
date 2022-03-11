@@ -126,12 +126,12 @@ class Recallonbusy extends \FreePBX_Helpers implements \BMO
 		#	if (!isMainExtension($extension)) {
 		#		continue;
 		#	}
-			$ext->splice('ext-local', $extension, 'dest', new \ext_gosubif('$["${DIALSTATUS}"="BUSY" && "${DB(AMPUSER/${AMPUSER}/cidnum)}" != ""]','recall-on-busy,s,1'),'',1);
+			$ext->splice('ext-local', $extension, 'dest', new \ext_gosubif('$["${DIALSTATUS}"="BUSY" && "${DB(AMPUSER/${AMPUSER}/cidnum)}" != "" && "${DB(DND/${EXTEN})}" != "YES"]','recall-on-busy,s,1'),'',1);
 		}
 		if ($this->getConfig('default') == 'enabled') {
-			$ifstring = '$["${DB(AMPUSER/${AMPUSER}/cidnum)}" != "" & ("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & ("${DB(ROBconfig/${AMPUSER})}"="enabled" | "${DB(ROBconfig/${AMPUSER})}"="" )]';
+			$ifstring = '$["${DB(AMPUSER/${AMPUSER}/cidnum)}" != "" & ("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & ("${DB(ROBconfig/${AMPUSER})}"="enabled" | "${DB(ROBconfig/${AMPUSER})}"="" ) & "${DB(DND/${EXTTOCALL})}" != "YES"]';
 		} else {
-			$ifstring = '$["${DB(AMPUSER/${AMPUSER}/cidnum)}" != "" & ("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & "${DB(ROBconfig/${AMPUSER})}"="enabled"]';
+			$ifstring = '$["${DB(AMPUSER/${AMPUSER}/cidnum)}" != "" & ("${DIALSTATUS}"="BUSY" | "${DIALSTATUS}"="CHANUNAVAIL") & "${DB(ROBconfig/${AMPUSER})}"="enabled" & "${DB(DND/${EXTTOCALL})}" != "YES"]';
 		}
 		$ext->splice('macro-exten-vm', 's', 20, new \ext_execif($ifstring,'MacroExit'));
 		$context = 'recall-on-busy';
