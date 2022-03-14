@@ -166,7 +166,7 @@ connected = False
 while True:
     try:
         if not connected:
-            ami_client_connect_and_login(address=CONFIG['Host'],port=CONFIG['Port'],username=CONFIG['Username'],secret=CONFIG['Secret'])
+            connected = ami_client_connect_and_login(address=CONFIG['Host'],port=CONFIG['Port'],username=CONFIG['Username'],secret=CONFIG['Secret'])
         if connected:
             # Ask for device state map updates
             client.send_action(SimpleAction('DeviceStateList'))
